@@ -9,12 +9,14 @@ import {
 import { signOut, useSession } from "next-auth/react";
 import { useState, useEffect } from "react";
 import useSpotify from "../hooks/useSpotify";
+import { useRecoilState } from "recoil"
+import { playlistIdState } from "../atoms/playlistAtom";
 
 function Sidebar() {
   const spotifyApi = useSpotify();
   const { data: session, status } = useSession();
   const [playlists, setPlayLists] = useState([]);
-  const [playlistId, setPlayListId] = useState(null);
+  const [playlistId, setPlayListId] = useRecoilState(playlistIdState);
 
   console.log("You picked playlist >>>", playlistId);
 
@@ -27,7 +29,9 @@ function Sidebar() {
   }, [session, spotifyApi]);
 
   return (
-    <div className="text-gray-500 p-5 text-sm border-r border-gray-900 overflow-y-scroll npm install scrollbar-hide h-screen">
+    <div className="text-gray-500 p-5 text-sm lg:text-sm
+    border-r border-gray-900 overflow-y-scroll scrollbar-hide h-screen
+    sm:max-w-[12rem] lg:max-w-[15rem] hidden md:inline-flex">
       <div className="space-y-4">
         <button
           className="flex items-center space-x-2 hover:text-white"
