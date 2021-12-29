@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { ChevronDownIcon } from "@heroicons/react/outline";
-import { useSession } from "next-auth/react";
+import { signIn, signOut, useSession } from "next-auth/react";
 import { shuffle } from "lodash";
 import useSpotify from "../hooks/useSpotify";
-import { useRecoilState, useRecoilValue } from "recoil"
+import { useRecoilState, useRecoilValue } from "recoil";
 import { playlistIdState, playlistState } from "../atoms/playlistAtom";
-import Songs from "./Songs"
+import Songs from "./Songs";
 
 const colors = [
   "from-indigo-500",
@@ -19,10 +19,10 @@ const colors = [
 
 function Center() {
   const { data: session } = useSession();
-  const spotifyApi = useSpotify()
+  const spotifyApi = useSpotify();
   const [color, setColor] = useState(null);
   const playlistId = useRecoilValue(playlistIdState);
-  const [playlist, setPlaylist] = useRecoilState(playlistState)
+  const [playlist, setPlaylist] = useRecoilState(playlistState);
 
   useEffect(() => {
     setColor(shuffle(colors).pop());
@@ -31,12 +31,19 @@ function Center() {
   useEffect(() => {
     spotifyApi
       .getPlaylist(playlistId)
-      .then((data)=> {
-        setPlaylist(data.body)})
-      .catch((error) => console.log("Somethig went wrang", error))
-  }, [spotifyApi, playlistId])
+      .then((data) => {
+        setPlaylist(data.body);
+      })
+      .catch((error) => console.log("Somethig went wrang", error));
+  }, [spotifyApi, playlistId]);
 
-  console.log(playlist)
+  const userToggle = () => {
+    if (session) {
+      signIn();
+    } else {
+      signOut();
+    }
+  };
 
   return (
     <div className="flex-grow h-screen overflow-y-scroll scrollbar-hide">
@@ -44,6 +51,7 @@ function Center() {
         <div
           className="flex items-center bg-black space-x-3 opacity-90 
         hover:opacity-80 cursor-pointer rounded-full p-1 pr-2 text-white"
+          onClick={userToggle}
         >
           <img
             className="rounded-full w-190 h-10"
@@ -59,10 +67,16 @@ function Center() {
         className={`flex items-end space-x-7 bg-gradient-to-b to-black 
         ${color} h-80 text-white p-8`}
       >
-        <img className="h-44 shadow-2xl" src={playlist?.images?.[0]?.url} alt=""/>
+        <img
+          className="h-44 shadow-2xl"
+          src={playlist?.images?.[0]?.url}
+          alt=""
+        />
         <div>
           <p>PLAYLIST</p>
-        <h1 className="text-2xl md:text-3xl xl:text-5xl font-bold">{playlist?.name}</h1>
+          <h1 className="text-2xl md:text-3xl xl:text-5xl font-bold">
+            {playlist?.name}
+          </h1>
         </div>
       </section>
 
