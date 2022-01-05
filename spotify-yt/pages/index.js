@@ -3,8 +3,11 @@ import Sidebar from "../components/Sidebar";
 import Center from "../components/Center";
 import { getSession } from "next-auth/react";
 import Player from "../components/Player";
+import {useRecoilState} from "recoil"
+import { isPlayingState } from "../atoms/songAtom"
 
 export default function Home() {
+  const [isPlaying, setIsPlaying] = useRecoilState(isPlayingState);
   return (
     <div className="bg-black h-screen overflow-hidden">
       <main className="flex">
@@ -13,7 +16,7 @@ export default function Home() {
       </main>
 
       <div className="sticky bottom-0">
-        <Player/>
+        {isPlaying && <Player/>}
       </div>
     </div>
   );

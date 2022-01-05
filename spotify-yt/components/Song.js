@@ -10,9 +10,9 @@ function Song({ order, track }) {
 
   const playSong = () => {
     setCurrentTrackId(track.track.id);
-    setIsPlaying(true);
+    setIsPlaying(!isPlaying);
     
-    alert("spotifyPremiumに加入してください")
+    alert("サンプル")
     // 音楽の再生はspotifyPremium加入している場合のみ
     // spotifyApi.play({
     //     uris: [track.track.uri],
